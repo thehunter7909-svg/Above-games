@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Play, RotateCcw, Volume2, VolumeX, Trophy, Flame } from 'lucide-react';
+import { safeStorage } from '../utils/storage';
 
 interface ScoreItem {
   score: number;
@@ -33,7 +34,7 @@ export default function BuiltInGame() {
 
   // Load high scores
   useEffect(() => {
-    const rawScores = localStorage.getItem('above_games_snake_highscores');
+    const rawScores = safeStorage.getItem('above_games_snake_highscores');
     if (rawScores) {
       try {
         setHighScores(JSON.parse(rawScores));
@@ -47,7 +48,7 @@ export default function BuiltInGame() {
         { score: 180, date: '2026-05-24' }
       ];
       setHighScores(demoScores);
-      localStorage.setItem('above_games_snake_highscores', JSON.stringify(demoScores));
+      safeStorage.setItem('above_games_snake_highscores', JSON.stringify(demoScores));
     }
   }, []);
 
@@ -205,7 +206,7 @@ export default function BuiltInGame() {
       setHighScores((prevScores) => {
         const withNew = [...prevScores, { score, date: new Date().toISOString().split('T')[0] }];
         const sorted = withNew.sort((a,b) => b.score - a.score).slice(0, 5);
-        localStorage.setItem('above_games_snake_highscores', JSON.stringify(sorted));
+        safeStorage.setItem('above_games_snake_highscores', JSON.stringify(sorted));
         return sorted;
       });
       return;

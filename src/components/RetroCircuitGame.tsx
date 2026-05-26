@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Play, RotateCcw, Volume2, VolumeX, Trophy, Zap, RefreshCw, Star, Flag } from 'lucide-react';
+import { safeStorage } from '../utils/storage';
 
 interface RallyCar {
   id: string;
@@ -150,7 +151,7 @@ export default function RetroCircuitGame() {
 
   // Load lap history logs
   useEffect(() => {
-    const raw = localStorage.getItem('above_games_circuit_scores');
+    const raw = safeStorage.getItem('above_games_circuit_scores');
     if (raw) {
       try {
         const parsed = JSON.parse(raw);
@@ -327,7 +328,7 @@ export default function RetroCircuitGame() {
 
         setLapHistory((prev) => {
           const updated = [attemptResult, ...prev].slice(0, 5);
-          localStorage.setItem('above_games_circuit_scores', JSON.stringify(updated));
+          safeStorage.setItem('above_games_circuit_scores', JSON.stringify(updated));
           return updated;
         });
       }

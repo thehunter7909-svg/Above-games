@@ -34,6 +34,7 @@ import DrainageGame from './components/DrainageGame';
 import NeonHighwayGame from './components/NeonHighwayGame';
 import RetroCircuitGame from './components/RetroCircuitGame';
 import MitsubishiIntro from './components/MitsubishiIntro';
+import { safeStorage } from './utils/storage';
 
 // Built-in offline native game definitions
 const nativeSnakeGame: Game = {
@@ -116,7 +117,7 @@ export default function App() {
   // Load catalog configs on startup
   useEffect(() => {
     // Determine base catalog list
-    const savedCustom = localStorage.getItem('above_games_custom_list');
+    const savedCustom = safeStorage.getItem('above_games_custom_list');
     let customList: Game[] = [];
     if (savedCustom) {
       try {
@@ -138,7 +139,7 @@ export default function App() {
     }
 
     // Initial favorites loader
-    const savedFavs = localStorage.getItem('above_games_favorites');
+    const savedFavs = safeStorage.getItem('above_games_favorites');
     if (savedFavs) {
       try {
         setFavorites(JSON.parse(savedFavs));
@@ -148,7 +149,7 @@ export default function App() {
     }
 
     // Load custom reviews context
-    const savedReviews = localStorage.getItem('above_games_reviews');
+    const savedReviews = safeStorage.getItem('above_games_reviews');
     if (savedReviews) {
       try {
         setReviews(JSON.parse(savedReviews));
@@ -184,7 +185,7 @@ export default function App() {
         }
       ];
       setReviews(seedReviews);
-      localStorage.setItem('above_games_reviews', JSON.stringify(seedReviews));
+      safeStorage.setItem('above_games_reviews', JSON.stringify(seedReviews));
     }
   }, []);
 
@@ -197,13 +198,13 @@ export default function App() {
       nextFavs = [...favorites, gameId];
     }
     setFavorites(nextFavs);
-    localStorage.setItem('above_games_favorites', JSON.stringify(nextFavs));
+    safeStorage.setItem('above_games_favorites', JSON.stringify(nextFavs));
   };
 
   // Add a new custom game card
   const handleAddCustomGame = (newGame: Game) => {
     // Fetch current custom list, append, and update
-    const savedCustom = localStorage.getItem('above_games_custom_list');
+    const savedCustom = safeStorage.getItem('above_games_custom_list');
     let customList: Game[] = [];
     if (savedCustom) {
       try {
@@ -212,7 +213,7 @@ export default function App() {
     }
 
     const updatedCustom = [...customList, newGame];
-    localStorage.setItem('above_games_custom_list', JSON.stringify(updatedCustom));
+    safeStorage.setItem('above_games_custom_list', JSON.stringify(updatedCustom));
 
     // Reload master state list
     setGames([neonHighwayGame, retroCircuitGame, drainageSnakeGame, nativeSnakeGame, ...defaultGamesList, ...updatedCustom]);
@@ -224,7 +225,7 @@ export default function App() {
     const confirm = window.confirm('Are you sure you want to remove this custom game from your current cabinet?');
     if (!confirm) return;
 
-    const savedCustom = localStorage.getItem('above_games_custom_list');
+    const savedCustom = safeStorage.getItem('above_games_custom_list');
     let customList: Game[] = [];
     if (savedCustom) {
       try {
@@ -233,12 +234,12 @@ export default function App() {
     }
 
     const updatedCustom = customList.filter(g => g.id !== gameId);
-    localStorage.setItem('above_games_custom_list', JSON.stringify(updatedCustom));
+    safeStorage.setItem('above_games_custom_list', JSON.stringify(updatedCustom));
 
     // Remove from favorites as well if relevant
     const updatedFavs = favorites.filter(id => id !== gameId);
     setFavorites(updatedFavs);
-    localStorage.setItem('above_games_favorites', JSON.stringify(updatedFavs));
+    safeStorage.setItem('above_games_favorites', JSON.stringify(updatedFavs));
 
     // If active game is deleted, select native default
     if (selectedGameId === gameId) {
@@ -286,7 +287,7 @@ export default function App() {
 
     const updatedReviews = [newReview, ...reviews];
     setReviews(updatedReviews);
-    localStorage.setItem('above_games_reviews', JSON.stringify(updatedReviews));
+    safeStorage.setItem('above_games_reviews', JSON.stringify(updatedReviews));
 
     // Update the average rating for this specific game
     const currentReviews = updatedReviews.filter(r => r.gameId === selectedGameId);

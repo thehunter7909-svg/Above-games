@@ -4,6 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Google AI Studio App</title>
+    <script>
+      // Automatically correct pathing if a user loaded on GitHub Pages or subfolder and is missing the trailing slash
+      (function() {
+        var loc = window.location;
+        if (loc.hostname.indexOf('github.io') !== -1 || loc.pathname.split('/').length > 2) {
+          var path = loc.pathname;
+          // If the path does not end with a slash, slash-terminate it so relative asset paths like "./assets/index.js" resolve inside the sub-project folder
+          if (path && path.length > 1 && !path.endsWith('/') && !path.split('/').pop().includes('.')) {
+            window.location.replace(loc.origin + path + '/' + loc.search + loc.hash);
+          }
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

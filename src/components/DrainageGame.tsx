@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Play, RotateCcw, Volume2, VolumeX, Trophy, Sparkles, Zap, Flame, User, Coffee } from 'lucide-react';
+import { safeStorage } from '../utils/storage';
 
 interface AnimeCharacter {
   id: string;
@@ -132,7 +133,7 @@ export default function DrainageGame() {
 
   // Load High Scores from local persistence
   useEffect(() => {
-    const raw = localStorage.getItem('above_games_drainage_highscores');
+    const raw = safeStorage.getItem('above_games_drainage_highscores');
     if (raw) {
       try {
         setHighScores(JSON.parse(raw));
@@ -146,7 +147,7 @@ export default function DrainageGame() {
         { score: 720, date: '2026-05-25', character: 'Sakura-chan' }
       ];
       setHighScores(fallback);
-      localStorage.setItem('above_games_drainage_highscores', JSON.stringify(fallback));
+      safeStorage.setItem('above_games_drainage_highscores', JSON.stringify(fallback));
     }
   }, []);
 
@@ -465,7 +466,7 @@ export default function DrainageGame() {
       setHighScores((prev) => {
         const item = { score, date: new Date().toISOString().split('T')[0], character: selectedChar.name };
         const updated = [...prev, item].sort((a,b) => b.score - a.score).slice(0, 5);
-        localStorage.setItem('above_games_drainage_highscores', JSON.stringify(updated));
+        safeStorage.setItem('above_games_drainage_highscores', JSON.stringify(updated));
         return updated;
       });
       return;
