@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Volume2, VolumeX, ArrowRight, Activity, Cpu } from 'lucide-react';
 
 interface MitsubishiIntroProps {
@@ -11,9 +11,21 @@ export default function MitsubishiIntro({ onComplete }: MitsubishiIntroProps) {
   const [isFadingOut, setIsFadingOut] = useState(false);
   const [logoState, setLogoState] = useState<'hidden' | 'drawing' | 'filled' | 'glowing'>('hidden');
 
+  // Keep a stable mutable ref of isMuted to prevent recreation of audio function dependencies
+  const isMutedRef = useRef(isMuted);
+  useEffect(() => {
+    isMutedRef.current = isMuted;
+  }, [isMuted]);
+
+  // Keep stable reference of onComplete callback
+  const onCompleteRef = useRef(onComplete);
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
+
   // Multi-frequency synthesizer chime for high fidelity arcade startup experience
   const playBootChime = useCallback(() => {
-    if (isMuted) return;
+    if (isMutedRef.current) return;
     try {
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
       if (!AudioCtx) return;
@@ -56,17 +68,25 @@ export default function MitsubishiIntro({ onComplete }: MitsubishiIntroProps) {
     } catch (e) {
       // safe fallback for locked browsers
     }
-  }, [isMuted]);
+  }, []);
 
-  // Handle stage progressions
+  // Sync playBootChime to a stable ref as well
+  const playBootChimeRef = useRef(playBootChime);
   useEffect(() => {
-    // Stage 1: Draw lines (0.5s)
+    playBootChimeRef.current = playBootChime;
+  }, [playBootChime]);
+
+  // Handle stage progressions exactly once on mount, immune to parent re-renders
+  useEffect(() => {
+    // Stage 1: Draw lines (0.4s)
     const t1 = setTimeout(() => setLogoState('drawing'), 400);
+    
     // Stage 2: Fill red diamonds (1.2s)
     const t2 = setTimeout(() => {
       setLogoState('filled');
-      playBootChime();
+      playBootChimeRef.current();
     }, 1200);
+
     // Stage 3: Glowing pulse (2.2s)
     const t3 = setTimeout(() => setLogoState('glowing'), 2200);
 
@@ -79,13 +99,17 @@ export default function MitsubishiIntro({ onComplete }: MitsubishiIntroProps) {
         }
         return prev + 1;
       });
-    }, 28);
+    }, 25);
 
     // Stage 4: Trigger exit transition (3.3s)
-    const t4 = setTimeout(() => setIsFadingOut(true), 3200);
+    const t4 = setTimeout(() => setIsFadingOut(true), 3300);
 
     // Stage 5: Complete cycle (4.0s)
-    const t5 = setTimeout(() => onComplete(), 3900);
+    const t5 = setTimeout(() => {
+      if (onCompleteRef.current) {
+        onCompleteRef.current();
+      }
+    }, 4000);
 
     return () => {
       clearTimeout(t1);
@@ -95,7 +119,13 @@ export default function MitsubishiIntro({ onComplete }: MitsubishiIntroProps) {
       clearTimeout(t5);
       clearInterval(progressTimer);
     };
-  }, [onComplete, playBootChime]);
+  }, []);
+
+  const handleSkip = () => {
+    if (onCompleteRef.current) {
+      onCompleteRef.current();
+    }
+  };
 
   return (
     <div
@@ -107,7 +137,7 @@ export default function MitsubishiIntro({ onComplete }: MitsubishiIntroProps) {
       {/* 1. Sleek minimal top rail status indicators */}
       <div className="w-full max-w-5xl flex justify-between items-center border-b border-gray-100 pb-4">
         <div className="flex items-center gap-2 font-mono text-[10px] text-gray-400">
-          <Activity className="w-4.5 h-4.5 text-red-600 animate-pulse" />
+          <Activity className="w-4 h-4 text-red-600 animate-pulse" />
           <span>MITSUBISHI DIGITAL HEAVY-INDUSTRIES CO.</span>
           <span className="hidden sm:inline text-gray-300">|</span>
           <span className="hidden sm:inline text-gray-500 uppercase">SYS_REV: v4.26_TOKYO</span>
@@ -117,15 +147,16 @@ export default function MitsubishiIntro({ onComplete }: MitsubishiIntroProps) {
         <div className="flex items-center gap-2">
           <button
             id="btn-intro-audio-toggle"
-            onClick={() => setIsMuted(!isMuted)}
+            onClick={() => setIsMuted(prev => !prev)}
             className="p-2 rounded-full hover:bg-gray-50 text-gray-400 hover:text-red-600 transition-colors"
+            title="Mute Sound"
           >
             {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
           </button>
           
           <button
             id="btn-intro-skip"
-            onClick={onComplete}
+            onClick={handleSkip}
             className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gray-50 hover:bg-red-50 text-gray-500 hover:text-red-600 font-mono text-[10px] uppercase font-bold transition-all border border-gray-100"
           >
             <span>Skip Cinematic</span>
@@ -156,14 +187,13 @@ export default function MitsubishiIntro({ onComplete }: MitsubishiIntroProps) {
               {/* 1. Top Diamond */}
               <polygon
                 points="150,150 120,98 150,46 180,98"
-                className={`transition-all duration-700 ${
-                  logoState === 'hidden'
-                    ? 'opacity-0 scale-90'
-                    : logoState === 'drawing'
-                    ? 'stroke-red-600 stroke-[2] fill-transparent opacity-80'
-                    : 'fill-red-600 opacity-100'
-                }`}
+                stroke="#ef4444"
+                strokeWidth={logoState === 'drawing' ? 2 : 0}
+                fill={logoState === 'filled' || logoState === 'glowing' ? '#ef4444' : 'transparent'}
+                className="transition-all duration-700"
                 style={{
+                  opacity: logoState === 'hidden' ? 0 : 1,
+                  transform: logoState === 'hidden' ? 'scale(0.95)' : 'scale(1)',
                   transformOrigin: '150px 150px',
                   transition: 'all 0.8s ease-out'
                 }}
@@ -172,14 +202,13 @@ export default function MitsubishiIntro({ onComplete }: MitsubishiIntroProps) {
               {/* 2. Bottom-Left Diamond */}
               <polygon
                 points="150,150 120,202 60,202 90,150"
-                className={`transition-all duration-700 ${
-                  logoState === 'hidden'
-                    ? 'opacity-0 scale-90'
-                    : logoState === 'drawing'
-                    ? 'stroke-red-600 stroke-[2] fill-transparent opacity-80'
-                    : 'fill-red-600 opacity-100'
-                }`}
+                stroke="#ef4444"
+                strokeWidth={logoState === 'drawing' ? 2 : 0}
+                fill={logoState === 'filled' || logoState === 'glowing' ? '#ef4444' : 'transparent'}
+                className="transition-all duration-700"
                 style={{
+                  opacity: logoState === 'hidden' ? 0 : 1,
+                  transform: logoState === 'hidden' ? 'scale(0.95)' : 'scale(1)',
                   transformOrigin: '150px 150px',
                   transition: 'all 0.8s ease-out',
                   transitionDelay: '150ms'
@@ -189,14 +218,13 @@ export default function MitsubishiIntro({ onComplete }: MitsubishiIntroProps) {
               {/* 3. Bottom-Right Diamond */}
               <polygon
                 points="150,150 180,202 240,202 210,150"
-                className={`transition-all duration-700 ${
-                  logoState === 'hidden'
-                    ? 'opacity-0 scale-90'
-                    : logoState === 'drawing'
-                    ? 'stroke-red-600 stroke-[2] fill-transparent opacity-80'
-                    : 'fill-red-600 opacity-100'
-                }`}
+                stroke="#ef4444"
+                strokeWidth={logoState === 'drawing' ? 2 : 0}
+                fill={logoState === 'filled' || logoState === 'glowing' ? '#ef4444' : 'transparent'}
+                className="transition-all duration-700"
                 style={{
+                  opacity: logoState === 'hidden' ? 0 : 1,
+                  transform: logoState === 'hidden' ? 'scale(0.95)' : 'scale(1)',
                   transformOrigin: '150px 150px',
                   transition: 'all 0.8s ease-out',
                   transitionDelay: '300ms'
