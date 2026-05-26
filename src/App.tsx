@@ -33,6 +33,7 @@ import BuiltInGame from './components/BuiltInGame';
 import DrainageGame from './components/DrainageGame';
 import NeonHighwayGame from './components/NeonHighwayGame';
 import RetroCircuitGame from './components/RetroCircuitGame';
+import MitsubishiIntro from './components/MitsubishiIntro';
 
 // Built-in offline native game definitions
 const nativeSnakeGame: Game = {
@@ -105,6 +106,7 @@ export default function App() {
   
   // Full-screen overlay trigger state
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
 
   // Unblocked Strong Link Generator state
   const [proxyUrlInput, setProxyUrlInput] = useState('https://roblox.com');
@@ -355,6 +357,10 @@ export default function App() {
 
   const activeGame = games.find(g => g.id === selectedGameId) || nativeSnakeGame;
   const activeGameReviews = reviews.filter(r => r.gameId === selectedGameId);
+
+  if (showIntro) {
+    return <MitsubishiIntro onComplete={() => setShowIntro(false)} />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col font-sans select-none">
