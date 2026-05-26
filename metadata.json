@@ -1,0 +1,11 @@
+{
+  "name": "Above Games",
+  "description": "An elegant, interactive hub to browse and play a curated collection of HTML5 web games embedded via iframes, with categorization, custom game addition, and play statistics.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,0 +1,86 @@
+[
+  {
+    "id": "duckduckgo",
+    "title": "DuckDuckGo Proxy Browser",
+    "description": "An unblocked search interface and proxy hub to access external game assets securely without firewall limits.",
+    "iframeUrl": "https://duckduckgo.com/?q=html5+unblocked+games&ia=web",
+    "category": "Retro",
+    "thumbnail": "linear-gradient(135deg, #de5833 0%, #b33918 100%)",
+    "plays": 12051,
+    "rating": 4.9,
+    "controls": "Type search queries. Used to bypass standard router filters to find mirror game directories.",
+    "difficulty": "Easy"
+  },
+  {
+    "id": "fortnite",
+    "title": "Fortnite Cloud Ingress",
+    "description": "Access fully featured action battlefield runs via the high-performance Xbox Cloud remote gaming portal.",
+    "iframeUrl": "https://www.xbox.com/play/games/fortnite",
+    "category": "Action",
+    "thumbnail": "linear-gradient(135deg, #1d4ed8 0%, #1e1b4b 100%)",
+    "plays": 18240,
+    "rating": 4.8,
+    "controls": "Keyboard WASD + Space to jump, mouse to target and harvest resources.",
+    "difficulty": "Hard"
+  },
+  {
+    "id": "roblox",
+    "title": "Roblox Web Playgate",
+    "description": "Join millions of user generated open worlds and casual minigames directly through unblocked cloud services.",
+    "iframeUrl": "https://now.gg/apps/roblox.html",
+    "category": "Arcade",
+    "thumbnail": "linear-gradient(135deg, #ef4444 0%, #7f1d1d 100%)",
+    "plays": 15490,
+    "rating": 4.7,
+    "controls": "Left Click to navigate menus, computer arrows/WASD to control your customized avatar blocks.",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "fren",
+    "title": "Frenzy Web Arcade",
+    "description": "Dozens of fast-paced arcade challenges, physical sports matches, and spatial puzzles.",
+    "iframeUrl": "https://frenzy.com/",
+    "category": "Puzzle",
+    "thumbnail": "linear-gradient(135deg, #eab308 0%, #a16207 100%)",
+    "plays": 6512,
+    "rating": 4.5,
+    "controls": "Mouse triggers or Spacebar depending on the active game selected.",
+    "difficulty": "Medium"
+  },
+  {
+    "id": "vaperv2",
+    "title": "VaperV2 Emulator (Vapes V2 Client)",
+    "description": "A high-performance custom Minecraft emulator client designed to bypass firewall rules with low ping rates.",
+    "iframeUrl": "https://classic.minecraft.net/",
+    "category": "Action",
+    "thumbnail": "linear-gradient(135deg, #8b5cf6 0%, #4c1d95 100%)",
+    "plays": 19430,
+    "rating": 4.9,
+    "controls": "WASD keys to run around, Left click to mine/place classic inventory blocks.",
+    "difficulty": "Hard"
+  },
+  {
+    "id": "slope-2026",
+    "title": "Slope Run Ultimate (2026 Spec)",
+    "description": "The viral neon aesthetic physics roller challenge. Accelerate down randomly shifting vertical green grids.",
+    "iframeUrl": "https://slopegame.online/",
+    "category": "Arcade",
+    "thumbnail": "linear-gradient(135deg, #10b981 0%, #064e3b 100%)",
+    "plays": 14201,
+    "rating": 4.8,
+    "controls": "Left / Right Arrow keys or A/D to tilt your glowing laser ball left and right.",
+    "difficulty": "Hard"
+  },
+  {
+    "id": "retrobowl-2026",
+    "title": "Retro Bowl (2026 Unblocked Edition)",
+    "description": "Manage your favorite gridiron franchise, call strategic plays, and throw perfect touchdowns in retro 8-bit style.",
+    "iframeUrl": "https://retrobowl.me/",
+    "category": "Retro",
+    "thumbnail": "linear-gradient(135deg, #d946ef 0%, #701a75 100%)",
+    "plays": 11390,
+    "rating": 4.9,
+    "controls": "Click and drag to aim passes, release to fire the ball. Spacebar or cursor keys to dodge defenders.",
+    "difficulty": "Medium"
+  }
+]
