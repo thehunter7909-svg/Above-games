@@ -29,8 +29,12 @@ import Header from './components/Header';
 import GameCard from './components/GameCard';
 import GamePlayFrame from './components/GamePlayFrame';
 import CustomGameForm from './components/CustomGameForm';
+import BuiltInGame from './components/BuiltInGame';
+import DrainageGame from './components/DrainageGame';
+import NeonHighwayGame from './components/NeonHighwayGame';
+import RetroCircuitGame from './components/RetroCircuitGame';
 
-// Built-in offline native game definition
+// Built-in offline native game definitions
 const nativeSnakeGame: Game = {
   id: 'built-in-arcade-snake',
   title: 'Neon GRID SNAKE (Off-Grid Native)',
@@ -44,9 +48,48 @@ const nativeSnakeGame: Game = {
   difficulty: 'Medium'
 };
 
+const drainageSnakeGame: Game = {
+  id: 'drainage',
+  title: 'DRAINAGE: Neon Anime Snake',
+  description: 'An immersive, premium anime-style custom Snake action clone with rich neon grids, collectable items (Boba, Ramen, Sushi, Taiyaki), visual frenzy combo modes, and interactive sound synthesis custom-built with zero network requests.',
+  iframeUrl: '',
+  category: 'Action',
+  thumbnail: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)',
+  plays: 2315,
+  rating: 5.0,
+  controls: 'Use W,A,S,D or Arrow keys to navigate. Collect Boba, Ramen, Sushi, and Mochi to activate Frenzy Mode and build massive score combos!',
+  difficulty: 'Hard'
+};
+
+const neonHighwayGame: Game = {
+  id: 'neon-highway',
+  title: 'Tokyo Horizon Drift',
+  description: 'An interactive, top-tier cyberpunk lane-shifting highway action game. Collect energy batteries, speed past obstacles to boost your score, and trigger Hyperdrive shield mode for high scores and synthesized soundscapes!',
+  iframeUrl: '',
+  category: 'Action',
+  thumbnail: 'linear-gradient(135deg, #a21caf 0%, #6366f1 100%)',
+  plays: 4012,
+  rating: 4.9,
+  controls: 'Use Left/Right arrow keys or A/D to switch lanes. Dodge other vehicles and collect green energy battery nodes!',
+  difficulty: 'Medium'
+};
+
+const retroCircuitGame: Game = {
+  id: 'retro-circuit',
+  title: 'Apex Retro Rally',
+  description: 'A top-down classic 2D racing micro-circuit simulator with professional sliding/drifting physics. Collect golden stars, slide around high-friction curbs, and set best lap times on the leaderboard with vintage synth audio sweeps!',
+  iframeUrl: '',
+  category: 'Sports',
+  thumbnail: 'linear-gradient(135deg, #059669 0%, #d97706 100%)',
+  plays: 1845,
+  rating: 4.8,
+  controls: 'Use Arrow Keys or WASD to accelerate, brake, and steer. Collect golden stars and drift across red grid curbs to complete laps!',
+  difficulty: 'Hard'
+};
+
 export default function App() {
   const [games, setGames] = useState<Game[]>([]);
-  const [selectedGameId, setSelectedGameId] = useState<string>('built-in-arcade-snake');
+  const [selectedGameId, setSelectedGameId] = useState<string>('neon-highway');
   const [favorites, setFavorites] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>('All');
@@ -82,7 +125,7 @@ export default function App() {
     }
 
     // Merge native, standard default config, and user saved items
-    const merged = [nativeSnakeGame, ...defaultGamesList, ...customList];
+    const merged = [neonHighwayGame, retroCircuitGame, drainageSnakeGame, nativeSnakeGame, ...defaultGamesList, ...customList];
     setGames(merged);
 
     // Dynamic direct URL launcher parameter parser
@@ -170,7 +213,7 @@ export default function App() {
     localStorage.setItem('above_games_custom_list', JSON.stringify(updatedCustom));
 
     // Reload master state list
-    setGames([nativeSnakeGame, ...defaultGamesList, ...updatedCustom]);
+    setGames([neonHighwayGame, retroCircuitGame, drainageSnakeGame, nativeSnakeGame, ...defaultGamesList, ...updatedCustom]);
     setSelectedGameId(newGame.id); // View newly imported game directly
   };
 
@@ -197,11 +240,11 @@ export default function App() {
 
     // If active game is deleted, select native default
     if (selectedGameId === gameId) {
-      setSelectedGameId('built-in-arcade-snake');
+      setSelectedGameId('neon-highway');
     }
 
     // Refresh state
-    setGames([nativeSnakeGame, ...defaultGamesList, ...updatedCustom]);
+    setGames([neonHighwayGame, retroCircuitGame, drainageSnakeGame, nativeSnakeGame, ...defaultGamesList, ...updatedCustom]);
   };
 
   // Increment play statistical tracker on loaded item
@@ -793,15 +836,17 @@ export default function App() {
 
           {/* Full viewport Frame output */}
           <div className="flex-1 w-full bg-black rounded-2xl overflow-hidden relative flex items-center justify-center border border-gray-900">
-            {activeGame.id === 'built-in-arcade-snake' ? (
-              <div className="scale-105 md:scale-110">
-                <GameCard 
-                  game={activeGame} 
-                  isActive={true} 
-                  isFavorite={false} 
-                  onSelect={()=>{}} 
-                  onToggleFavorite={()=>{}} 
-                />
+            {activeGame.id === 'built-in-arcade-snake' || activeGame.id === 'drainage' || activeGame.id === 'neon-highway' || activeGame.id === 'retro-circuit' ? (
+              <div className="w-full flex justify-center items-center overflow-auto p-4 max-h-full">
+                {activeGame.id === 'drainage' ? (
+                  <DrainageGame />
+                ) : activeGame.id === 'neon-highway' ? (
+                  <NeonHighwayGame />
+                ) : activeGame.id === 'retro-circuit' ? (
+                  <RetroCircuitGame />
+                ) : (
+                  <BuiltInGame />
+                )}
               </div>
             ) : (
               <iframe

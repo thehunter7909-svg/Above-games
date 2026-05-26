@@ -66,22 +66,12 @@ export default function Header({
         {/* Action Controls */}
         <div className="flex items-center gap-3 w-full md:w-auto justify-end">
           <button
-            id="btn-random-game"
-            onClick={onRandomGameClick}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-gray-300 hover:text-white hover:border-gray-700 transition-all text-sm font-medium"
-            title="Suffle play a random game"
-          >
-            <Dice5 className="w-4 h-4 text-emerald-400" />
-            <span>Surprise Me</span>
-          </button>
-          
-          <button
             id="btn-add-game"
             onClick={onAddGameClick}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white transition-all text-sm font-medium shadow-md shadow-indigo-600/20"
           >
             <Plus className="w-4 h-4" />
-            <span>Add Iframe Game</span>
+            <span>Add Frame Game</span>
           </button>
         </div>
       </div>

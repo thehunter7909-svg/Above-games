@@ -2,6 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { RefreshCw, Maximize2, Monitor, Smartphone, Tablet, ExternalLink, ShieldAlert, Sparkles, Clock, Compass, Share2, Check, Download, ShieldCheck, Globe } from 'lucide-react';
 import { Game } from '../types';
 import BuiltInGame from './BuiltInGame';
+import DrainageGame from './DrainageGame';
+import NeonHighwayGame from './NeonHighwayGame';
+import RetroCircuitGame from './RetroCircuitGame';
 
 interface GamePlayFrameProps {
   game: Game;
@@ -207,7 +210,7 @@ export default function GamePlayFrame({
     }
   };
 
-  const isNativeGame = game.id === 'built-in-arcade-snake';
+  const isNativeGame = game.id === 'built-in-arcade-snake' || game.id === 'drainage' || game.id === 'neon-highway' || game.id === 'retro-circuit';
 
   return (
     <div id={`gameplay-deck-${game.id}`} className="bg-gray-950 border border-gray-800 rounded-2xl overflow-hidden shadow-2xl flex flex-col">
@@ -336,7 +339,15 @@ export default function GamePlayFrame({
         {isNativeGame ? (
           /* Render high performance offline retro game */
           <div className="w-full flex justify-center items-center">
-            <BuiltInGame />
+            {game.id === 'drainage' ? (
+              <DrainageGame />
+            ) : game.id === 'neon-highway' ? (
+              <NeonHighwayGame />
+            ) : game.id === 'retro-circuit' ? (
+              <RetroCircuitGame />
+            ) : (
+              <BuiltInGame />
+            )}
           </div>
         ) : (
           /* Render embedding secure game frame */
